@@ -1,12 +1,16 @@
 library(shiny)
 library(tidyverse)
 library(plotly)
+library(shinythemes)
 
 # define data
 movies <- read_csv("C:\\Users\\eemil\\Documents\\courses\\spr24\\pa446\\pa446_assignment4\\movieratings_a4\\movieratings.csv")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
+  
+    # select theme
+    theme = shinytheme("slate"),
 
     # Application title
     titlePanel("Movie Ratings"),
@@ -51,7 +55,7 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-           plotOutput("moviePlot")
+           plotlyOutput("moviePlot")
         )
     )
 )
@@ -59,7 +63,7 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
   
-  output$moviePlot <- renderPlot({
+  output$moviePlot <- renderPlotly({
     moviegraph <- movies %>%
       ggplot() +
       geom_point(aes_string(
@@ -68,6 +72,7 @@ server <- function(input, output) {
         color = input$color
       ), alpha = input$alpha, size = input$size) +
       ggtitle(input$title)
+    moviegraph <- ggplotly(moviegraph)
     print(moviegraph)
   })
 }
